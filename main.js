@@ -7,7 +7,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 let rooms = {
-  "General": { messages: [], members: [] } // Initialize with a default "General" room (capitalized)
+  "General": { messages: [], members: [] } // Initialize with a default "General" room
 };
 
 app.get("/", sendMessages);
