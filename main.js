@@ -1,3 +1,5 @@
+// Hosted at https://waffle.ayaangrover.hackclub.app and https://71cdac9f-034e-45b9-a14e-a52eced71d28-00-4iave9rzd7yu.worf.replit.dev/
+
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
