@@ -29,7 +29,7 @@ function receiveMessage(req, res) {
     return res.status(404).send("Room not found");
   }
   
-  if (!rooms[roomID].members.includes(senderID)) {
+  if (roomID !== "General" && !rooms[roomID].members.includes(senderID)) {
     return res.status(403).send("User not authorized to send messages in this room");
   }
   
@@ -53,15 +53,12 @@ function receiveMessage(req, res) {
 function sendMessages(req, res) {
   const roomId = req.query.room || "General";
   const userId = req.query.userId;
-
   if (!rooms[roomId]) {
     return res.status(404).send("Room not found");
   }
-
-  if (!rooms[roomId].members.includes(userId)) {
+  if (roomId !== "General" && !rooms[roomId].members.includes(userId)) {
     return res.status(403).send("User not authorized to access this room");
   }
-
   console.log(`Sending messages for room: ${roomId}`);
   console.log(`Messages: ${JSON.stringify(rooms[roomId].messages || [])}`);
   res.json(rooms[roomId].messages || []);
@@ -83,7 +80,7 @@ function createRoom(req, res) {
 function getRooms(req, res) {
   const userId = req.query.userId;
   const accessibleRooms = Object.keys(rooms).filter(roomName => 
-    rooms[roomName].members.includes(userId)
+    roomName === "General" || rooms[roomName].members.includes(userId)
   );
   res.json(accessibleRooms);
 }
