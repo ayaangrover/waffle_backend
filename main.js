@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 let rooms = {
-  "General": { messages: [], members: [] } // Initialize with a default "General" room
+  General: { messages: [], members: [] }, // Initialize with a default "General" room
 };
 
 app.get("/", sendMessages);
@@ -26,15 +26,17 @@ app.listen(4200, () => {
 
 function receiveMessage(req, res) {
   const { content, senderID, roomID, timestamp, profilePictureURL } = req.body;
-  
+
   if (!rooms[roomID]) {
     return res.status(404).send("Room not found");
   }
-  
+
   if (roomID !== "General" && !rooms[roomID].members.includes(senderID)) {
-    return res.status(403).send("User not authorized to send messages in this room");
+    return res
+      .status(403)
+      .send("User not authorized to send messages in this room");
   }
-  
+
   if (content) {
     const message = {
       id: Date.now().toString(),
@@ -42,13 +44,15 @@ function receiveMessage(req, res) {
       senderID,
       roomID,
       timestamp,
-      profilePictureURL
+      profilePictureURL,
     };
-    
+
     rooms[roomID].messages.push(message);
     res.json({ success: true, message: "Message received successfully" });
   } else {
-    res.status(400).json({ success: false, message: "No message content received" });
+    res
+      .status(400)
+      .json({ success: false, message: "No message content received" });
   }
 }
 
@@ -71,18 +75,24 @@ function createRoom(req, res) {
   if (roomName && !rooms[roomName]) {
     rooms[roomName] = {
       messages: [],
-      members: [creatorId, ...members]
+      members: [creatorId, ...members],
     };
     res.json({ success: true, message: "Room created successfully" });
   } else {
-    res.status(400).json({ success: false, message: "Invalid room name or room already exists" });
+    res
+      .status(400)
+      .json({
+        success: false,
+        message: "Invalid room name or room already exists",
+      });
   }
 }
 
 function getRooms(req, res) {
   const userId = req.query.userId;
-  const accessibleRooms = Object.keys(rooms).filter(roomName => 
-    roomName === "General" || rooms[roomName].members.includes(userId)
+  const accessibleRooms = Object.keys(rooms).filter(
+    (roomName) =>
+      roomName === "General" || rooms[roomName].members.includes(userId),
   );
   res.json(accessibleRooms);
 }
@@ -97,7 +107,9 @@ function clearMessages(req, res) {
         rooms[roomId].messages = [];
         res.send(`Messages cleared for room: ${roomId}`);
       } else {
-        res.status(403).send("User not authorized to clear messages in this room");
+        res
+          .status(403)
+          .send("User not authorized to clear messages in this room");
       }
     } else {
       res.status(404).send("Room not found");
@@ -119,6 +131,8 @@ function editRoomMembers(req, res) {
     return res.status(403).send("User not authorized to edit room members");
   }
 
-  rooms[roomId].members = [...new Set([...rooms[roomId].members, ...newMembers])];
+  rooms[roomId].members = [
+    ...new Set([...rooms[roomId].members, ...newMembers]),
+  ];
   res.json({ success: true, message: "Room members updated successfully" });
 }
