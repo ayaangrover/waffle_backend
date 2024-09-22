@@ -1,4 +1,5 @@
 // Hosted at https://waffle.ayaangrover.hackclub.app and https://71cdac9f-034e-45b9-a14e-a52eced71d28-00-4iave9rzd7yu.worf.replit.dev/
+// When updating code on Hack Club's Nest server, use "systemctl --user restart waffle_backend" to update the code and put it online again.
 
 const express = require("express");
 const cors = require("cors");
